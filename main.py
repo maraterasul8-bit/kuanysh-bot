@@ -99,7 +99,6 @@ def callback_query(call):
         bot.edit_message_text(chat_id=chat_id, message_id=call.message.message_id, 
                               text=result_text, reply_markup=markup, parse_mode="Markdown")
 
-# Telegram-нан келетін хабарламаларды қабылдайтын webhook
 @app.route(f'/{BOT_TOKEN}', methods=['POST'])
 def telegram_webhook():
     if request.headers.get('content-type') == 'application/json':
@@ -109,7 +108,6 @@ def telegram_webhook():
         return "OK", 200
     return "Forbidden", 403
 
-# Трейдинг сигналдарын қабылдайтын webhook
 @app.route('/webhook', methods=['POST'])
 def trading_webhook():
     data = request.json
@@ -123,4 +121,4 @@ if __name__ == "__main__":
     bot.remove_webhook()
     bot.set_webhook(url=WEBHOOK_URL)
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-    
+        
