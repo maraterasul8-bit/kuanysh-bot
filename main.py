@@ -1,6 +1,7 @@
 import os
 import time
 import random
+import threading
 import telebot
 from telebot import types
 from flask import Flask, request
@@ -11,7 +12,7 @@ CHAT_ID = "1377361873"
 bot = telebot.TeleBot(BOT_TOKEN)
 app = Flask(__name__)
 
-# Пайдаланушы таңдауларын уақытша сақтауға арналған сөздік
+# Пайдаланушы таңдауларын сақтау
 user_data = {}
 
 @bot.message_handler(commands=['start'])
@@ -79,7 +80,6 @@ def callback_query(call):
         pair = info.get("pair", "AED/CNY")
         t_frame = info.get("time", "1m")
         
-        # Рендомды түрде Сату немесе Сатып алу шығару (немесе өз логикаңызды қоюға болады)
         decision = random.choice(["🟢 ПОКУПКА (BUY)", "🔴 ПРОДАЖА (SELL)"])
         confidence = round(random.uniform(88.5, 98.2), 1)
         price_val = round(random.uniform(1.1000, 5.5000), 4)
@@ -109,6 +109,16 @@ def webhook():
         return "OK", 200
     return "Error", 400
 
+# Ботты бөлек ағында іске қосу функциясы
+def run_bot():
+    bot.infinity_polling(skip_pending=True)
+
 if __name__ == "__main__":
+    # Ботты фоновом режимде (потокта) қосамыз
+    bot_thread = threading.Thread(target=run_bot)
+    bot_thread.daemon = True
+    bot_thread.start()
+    
+    # Flask веб-серверін іске қосамыз
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-        
+    
