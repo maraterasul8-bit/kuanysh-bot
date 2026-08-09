@@ -1,18 +1,17 @@
 import os
 import time
 import random
-import threading
 import telebot
 from telebot import types
 from flask import Flask, request
 
 BOT_TOKEN = "8991039569:AAGACaer0mj5acvbiGVWfxdN01m9PBgi-1A"
 CHAT_ID = "1377361873"
+WEBHOOK_URL = f"https://kuanysh-bot.onrender.com/{BOT_TOKEN}"
 
 bot = telebot.TeleBot(BOT_TOKEN)
 app = Flask(__name__)
 
-# Пайдаланушы таңдауларын сақтау
 user_data = {}
 
 @bot.message_handler(commands=['start'])
@@ -100,8 +99,19 @@ def callback_query(call):
         bot.edit_message_text(chat_id=chat_id, message_id=call.message.message_id, 
                               text=result_text, reply_markup=markup, parse_mode="Markdown")
 
+# Telegram-нан келетін хабарламаларды қабылдайтын webhook
+@app.route(f'/{BOT_TOKEN}', methods=['POST'])
+def telegram_webhook():
+    if request.headers.get('content-type') == 'application/json':
+        json_string = request.get_data().decode('utf-8')
+        update = telebot.types.Update.de_json(json_string)
+        bot.process_new_updates([update])
+        return "OK", 200
+    return "Forbidden", 403
+
+# Трейдинг сигналдарын қабылдайтын webhook
 @app.route('/webhook', methods=['POST'])
-def webhook():
+def trading_webhook():
     data = request.json
     if data:
         signal = data.get('signal', 'Белгісіз сигнал')
@@ -109,16 +119,8 @@ def webhook():
         return "OK", 200
     return "Error", 400
 
-# Ботты бөлек ағында іске қосу функциясы
-def run_bot():
-    bot.infinity_polling(skip_pending=True)
-
 if __name__ == "__main__":
-    # Ботты фоновом режимде (потокта) қосамыз
-    bot_thread = threading.Thread(target=run_bot)
-    bot_thread.daemon = True
-    bot_thread.start()
-    
-    # Flask веб-серверін іске қосамыз
+    bot.remove_webhook()
+    bot.set_webhook(url=WEBHOOK_URL)
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
     
