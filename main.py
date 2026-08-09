@@ -5,7 +5,7 @@ import telebot
 from telebot import types
 from flask import Flask, request
 
-BOT_TOKEN = "8991039569:AAGACaer0mj5acvbiGVWfxdN01m9PBgi-1A"
+BOT_TOKEN = "8991039569:AAGAcAeR0mj5acvbiGVWfxdNO1m9PBgi-lA"
 CHAT_ID = "1377361873"
 WEBHOOK_URL = f"https://kuanysh-bot.onrender.com/{BOT_TOKEN}"
 
