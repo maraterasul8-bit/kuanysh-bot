@@ -28,16 +28,47 @@ def callback_query(call):
     if call.data == "main_menu" or call.data == "back_to_pairs":
         markup = types.InlineKeyboardMarkup(row_width=2)
         markup.add(
-            types.InlineKeyboardButton("AED/CNY OTC", callback_data="pair_AED/CNY"),
-            types.InlineKeyboardButton("EUR/USD OTC", callback_data="pair_EUR/USD"),
-            types.InlineKeyboardButton("GBP/USD OTC", callback_data="pair_GBP/USD"),
-            types.InlineKeyboardButton("BTC/USD OTC", callback_data="pair_BTC/USD")
+            types.InlineKeyboardButton("AED/CNY OTC", callback_data="pair_AED/CNY_OTC"),
+            types.InlineKeyboardButton("USD/PKR OTC", callback_data="pair_USD/PKR_OTC"),
+            types.InlineKeyboardButton("USD/PHP OTC", callback_data="pair_USD/PHP_OTC"),
+            types.InlineKeyboardButton("EUR/USD OTC", callback_data="pair_EUR/USD_OTC"),
+            types.InlineKeyboardButton("GBP/USD OTC", callback_data="pair_GBP/USD_OTC"),
+            types.InlineKeyboardButton("USD/CAD OTC", callback_data="pair_USD/CAD_OTC"),
+            types.InlineKeyboardButton("USD/JPY OTC", callback_data="pair_USD/JPY_OTC"),
+            types.InlineKeyboardButton("AUD/CAD OTC", callback_data="pair_AUD/CAD_OTC"),
+            types.InlineKeyboardButton("AUD/CHF OTC", callback_data="pair_AUD/CHF_OTC"),
+            types.InlineKeyboardButton("AUD/USD OTC", callback_data="pair_AUD/USD_OTC"),
+            types.InlineKeyboardButton("CAD/JPY OTC", callback_data="pair_CAD/JPY_OTC"),
+            types.InlineKeyboardButton("EUR/CHF OTC", callback_data="pair_EUR/CHF_OTC"),
+            types.InlineKeyboardButton("EUR/TRY OTC", callback_data="pair_EUR/TRY_OTC"),
+            types.InlineKeyboardButton("GBP/AUD OTC", callback_data="pair_GBP/AUD_OTC"),
+            types.InlineKeyboardButton("OMR/CNY OTC", callback_data="pair_OMR/CNY_OTC"),
+            types.InlineKeyboardButton("QAR/CNY OTC", callback_data="pair_QAR/CNY_OTC"),
+            types.InlineKeyboardButton("USD/CNH OTC", callback_data="pair_USD/CNH_OTC"),
+            types.InlineKeyboardButton("USD/INR OTC", callback_data="pair_USD/INR_OTC"),
+            types.InlineKeyboardButton("ZAR/USD OTC", callback_data="pair_ZAR/USD_OTC"),
+            types.InlineKeyboardButton("CHF/NOK OTC", callback_data="pair_CHF/NOK_OTC"),
+            types.InlineKeyboardButton("SAR/CNY OTC", callback_data="pair_SAR/CNY_OTC"),
+            types.InlineKeyboardButton("AUD/NZD OTC", callback_data="pair_AUD/NZD_OTC"),
+            types.InlineKeyboardButton("EUR/GBP OTC", callback_data="pair_EUR/GBP_OTC"),
+            types.InlineKeyboardButton("EUR/NZD OTC", callback_data="pair_EUR/NZD_OTC"),
+            types.InlineKeyboardButton("EUR/JPY OTC", callback_data="pair_EUR/JPY_OTC"),
+            types.InlineKeyboardButton("USD/BRL OTC", callback_data="pair_USD/BRL_OTC"),
+            types.InlineKeyboardButton("USD/MXN OTC", callback_data="pair_USD/MXN_OTC"),
+            types.InlineKeyboardButton("USD/RUB OTC", callback_data="pair_USD/RUB_OTC"),
+            types.InlineKeyboardButton("CAD/CHF OTC", callback_data="pair_CAD/CHF_OTC"),
+            types.InlineKeyboardButton("USD/ARS OTC", callback_data="pair_USD/ARS_OTC"),
+            types.InlineKeyboardButton("NZD/JPY OTC", callback_data="pair_NZD/JPY_OTC"),
+            types.InlineKeyboardButton("CHF/JPY OTC", callback_data="pair_CHF/JPY_OTC"),
+            types.InlineKeyboardButton("NZD/USD OTC", callback_data="pair_NZD/USD_OTC"),
+            types.InlineKeyboardButton("USD/CHF OTC", callback_data="pair_USD/CHF_OTC"),
+            types.InlineKeyboardButton("GBP/JPY OTC", callback_data="pair_GBP/JPY_OTC")
         )
         bot.edit_message_text(chat_id=chat_id, message_id=call.message.message_id, 
-                              text="📊 **Активті таңдаңыз:**", reply_markup=markup, parse_mode="Markdown")
+                              text="📊 **Барлық OTC активтері тізімі:**\nҚажетті жұпты таңдаңыз:", reply_markup=markup, parse_mode="Markdown")
         
     elif call.data.startswith("pair_"):
-        pair = call.data.split("_")[1]
+        pair = call.data.split("_", 1)[1].replace("_", "/")
         user_data[chat_id] = {"pair": pair}
         
         markup = types.InlineKeyboardMarkup(row_width=4)
@@ -57,14 +88,14 @@ def callback_query(call):
         if chat_id in user_data:
             user_data[chat_id]["time"] = t_frame
         else:
-            user_data[chat_id] = {"pair": "AED/CNY", "time": t_frame}
+            user_data[chat_id] = {"pair": "AED/CNY OTC", "time": t_frame}
             
         pair = user_data[chat_id]["pair"]
         
         markup = types.InlineKeyboardMarkup(row_width=1)
         markup.add(
             types.InlineKeyboardButton("🔮 ПОЛУЧИТЬ ПРОГНОЗ", callback_data="get_forecast"),
-            types.InlineKeyboardButton("⬅️ Артқа", callback_data=f"pair_{pair}")
+            types.InlineKeyboardButton("⬅️ Артқа", callback_data="back_to_pairs")
         )
         
         bot.edit_message_text(chat_id=chat_id, message_id=call.message.message_id, 
@@ -75,8 +106,8 @@ def callback_query(call):
                               text="🧠 **Анализ нейросеть...**\nОқыту модельдері мен индикаторлар тексерілуде...", parse_mode="Markdown")
         time.sleep(2)
         
-        info = user_data.get(chat_id, {"pair": "AED/CNY", "time": "1m"})
-        pair = info.get("pair", "AED/CNY")
+        info = user_data.get(chat_id, {"pair": "AED/CNY OTC", "time": "1m"})
+        pair = info.get("pair", "AED/CNY OTC")
         t_frame = info.get("time", "1m")
         
         decision = random.choice(["🟢 ПОКУПКА (BUY)", "🔴 ПРОДАЖА (SELL)"])
@@ -85,7 +116,7 @@ def callback_query(call):
 
         result_text = (
             f"🤖 **KUANYSH SYSTEM v2.0 | ПРОГНОЗ**\n\n"
-            f"📊 Актив: **{pair} OTC**\n"
+            f"📊 Актив: **{pair}**\n"
             f"⏱️ Таймфрейм: **{t_frame}**\n"
             f"📈 Баға деңгейі: `{price_val}`\n\n"
             f"🔥 Қорытынды шешім: **{decision}**\n"
@@ -121,4 +152,4 @@ if __name__ == "__main__":
     bot.remove_webhook()
     bot.set_webhook(url=WEBHOOK_URL)
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-        
+    
