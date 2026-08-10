@@ -2,6 +2,7 @@ import os
 import telebot
 from telebot import types
 import random
+import threading
 
 from flask import Flask
 app = Flask(__name__)
@@ -13,7 +14,7 @@ def home():
 TOKEN = "8991035959:AAF#H1o6A7L7gcbNegIf86KEGjt0V_VHQ"
 bot = telebot.TeleBot(TOKEN)
 
-# Барлық активтердің тізімі мен мәндері (бір жерде жиналған)
+# Барлық активтердің тізімі мен мәндері
 АКТИВТЕР_БАЗАСЫ = {
     "eurusd": ("EUR/USD", 1.0920, 0.0010),
     "gbpusd": ("GBP/USD", 1.3150, 0.0015),
@@ -74,38 +75,43 @@ def handle_callback(call):
         winrate = random.randint(93, 99)
         
         if symmetry >= 0:
-            signal = "🟢 ПОКУПКА (ВВЕРХ)"
-            trend = "Өсу тренді (Bullish)"
+            сигнал = "🟢 ПОКУПКА (ВВЕРХ)"
+            тренд = "Өсу тренді (Bullish)"
         else:
-            signal = "🔴 ПРОДАЖА (ВНИЗ)"
-            trend = "Құлдырау тренді (Bearish)"
+            сигнал = "🔴 ПРОДАЖА (ВНИЗ)"
+            тренд = "Құлдырау тренді (Bearish)"
 
-        analysis_text = (
+        анализ_текст = (
             f"📈 **КУАНЫШ АНАЛИЗАТОРИ: {name}**\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"💵 Ағымдағы баға: `{price}`\n"
             f"📊 Винрейт: `{winrate}%`\n"
-            f"📉 Тренд жағдайы: `{trend}`\n"
+            f"📉 Тренд жағдайы: `{тренд}`\n"
             f"⚙️ Индикатор (RSI/SMA): `Талдау аяқталды`\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"🎯 **ҚОРЫТЫНДЫ ШЕШІМ:**\n"
-            f"👉 Сигнал: **{signal}**\n"
+            f"👉 Сигнал: **{сигнал}**\n"
             f"⏱ Уақыт (Экспирация): `1 минут`"
         )
 
         try:
-            bot.send_message(call.message.chat.id, analysis_text, parse_mode="Markdown")
+            bot.send_message(call.message.chat.id, анализ_текст, parse_mode="Markdown")
         except Exception:
             pass
 
 def run_bot():
-    bot.remove_webhook()
+    try:
+        bot.remove_webhook()
+    except Exception:
+        pass
     print("Kuanysh Trade Bot сәтті іске қосылды.")
     bot.infinity_polling(none_stop=True)
 
+# Ботты модуль деңгейінде (Gunicorn немесе python арқылы қосқанда да) бірден іске қосу:
+bot_thread = threading.Thread(target=run_bot)
+bot_thread.daemon = True
+bot_thread.start()
+
 if __name__ == "__main__":
-    import threading
-    t = threading.Thread(target=run_bot)
-    t.start()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
     
