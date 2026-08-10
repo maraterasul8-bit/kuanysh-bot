@@ -2,7 +2,7 @@ import telebot
 import yfinance as yf
 from telebot import types
 
-# Бот токені
+# Жаңа бот токені
 TOKEN = "8991039569:AAFoH1ooA7Ls7gcbNeglT86KEGjEoV_VHqQ"
 bot = telebot.TeleBot(TOKEN)
 
@@ -78,7 +78,6 @@ def handle_callback(call):
             bot.send_message(call.message.chat.id, "❌ Деректерді алу мүмкін болмады.")
 
 if __name__ == '__main__':
-    # Webhook-ті толығымен өшіріп, polling-ді іске қосу
     bot.remove_webhook()
     print("Bot is running...")
     bot.infinity_polling(none_stop=True)
