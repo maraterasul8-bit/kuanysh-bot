@@ -4,7 +4,7 @@ import pandas as pd
 from telebot import types
 
 # Боттың токені
-TOKEN = "TELEGRAM_BOT_TOKENI"
+TOKEN = "8991039569:AAGAcAeR0mj5acvbiGVWfxdNO1m9PBgi-lA"
 bot = telebot.TeleBot(TOKEN)
 
 # /start командасы — барлық активтер тізімі
