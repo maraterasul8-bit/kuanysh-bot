@@ -3,7 +3,7 @@ import yfinance as yf
 from telebot import types
 
 # Бот токені
-TOKEN = "8991039569:AAGAcAeR0mj5acvbiGVWfxdNO1m9PBgi-lA"
+TOKEN = "8991039569:AAFoH1ooA7Ls7gcbNeglT86KEGjEoV_VHqQ"
 bot = telebot.TeleBot(TOKEN)
 
 # Start командасы
