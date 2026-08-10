@@ -11,7 +11,8 @@ app = Flask(__name__)
 def home():
     return "Kuanysh Trade Bot жұмыс істеп тұр!"
 
-TOKEN = "8991035959:AAF#H1o6A7L7gcbNegIf86KEGjt0V_VHQ"
+# Өз токеніңізді осы жерге дұрыстап жазыңыз
+TOKEN = "8991035959:AAF-H1o6A7L7gcbNegIf86KEGjt0V_VHQ"
 bot = telebot.TeleBot(TOKEN)
 
 # Барлық активтердің тізімі мен мәндері
@@ -100,14 +101,13 @@ def handle_callback(call):
             pass
 
 def run_bot():
+    print("Kuanysh Trade Bot іске қосылуда...")
     try:
-        bot.remove_webhook()
-    except Exception:
-        pass
-    print("Kuanysh Trade Bot сәтті іске қосылды.")
-    bot.infinity_polling(none_stop=True)
+        bot.infinity_polling(none_stop=True, interval=0, timeout=20)
+    except Exception as e:
+        print(f"Бот қатесі: {e}")
 
-# Ботты модуль деңгейінде (Gunicorn немесе python арқылы қосқанда да) бірден іске қосу:
+# Ботты фондық режимде іске қосу
 bot_thread = threading.Thread(target=run_bot)
 bot_thread.daemon = True
 bot_thread.start()
