@@ -12,7 +12,7 @@ def home():
     return "Kuanysh Trade Bot жұмыс істеп тұр!"
 
 # Өз токеніңізді осы жерге дұрыстап жазыңыз
-TOKEN = "8991035959:AAF-H1o6A7L7gcbNegIf86KEGjt0V_VHQ"
+TOKEN = "8991039569:AAFoH1ooA7Ls7gcbNeglT86KEGjEoV_VHqQ"
 bot = telebot.TeleBot(TOKEN)
 
 # Барлық активтердің тізімі мен мәндері
